@@ -23,5 +23,12 @@ namespace snakeLogic
                 return SnakeElements.First();
             }
         }
+        public Position SnakeTail
+        {
+            get
+            {
+                return SnakeElements.Last();
+            }
+        }
     }
 }

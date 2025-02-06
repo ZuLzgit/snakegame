@@ -11,5 +11,6 @@ namespace snakeLogic
         public Rock(int x, int y) : base(x, y)
         {
         }
+        public List<Rock> Rocks { get; set; } = new List<Rock>(); 
     }
 }
