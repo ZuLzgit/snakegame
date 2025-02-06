@@ -36,7 +36,7 @@ namespace snakeUI
             var snakeHead = _gameBoard.Snake.SnakeHead;
             foreach ( var snakeElement in _gameBoard.Snake.SnakeElements)
             {
-                var rectangle = CreateRectangle(snakeElement.X * GridFactor, snakeElement.Y * GridFactor, (snakeElement == snakeHead) ? Colors.AliceBlue : Colors.DarkOliveGreen);
+                var rectangle = CreateRectangle(snakeElement.X * GridFactor, snakeElement.Y * GridFactor, (snakeElement == snakeHead) ? Colors.LightSkyBlue : Colors.LawnGreen);
                 GameBoard.Children.Add(rectangle);
             }
 
