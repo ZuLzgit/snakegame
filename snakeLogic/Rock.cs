@@ -11,6 +11,26 @@ namespace snakeLogic
         public Rock(int x, int y) : base(x, y)
         {
         }
-        public List<Rock> Rocks { get; set; } = new List<Rock>(); 
+        public static List<Rock> CreateRocks(int rockCount, int boardWidth, int boardHeight, Snake snake)
+        {
+            List<Rock> rocks = new List<Rock>();
+            Random random = new Random();
+
+            for (int i = 0; i < rockCount; i++)
+            {
+                int x = random.Next(0, boardWidth);
+                int y = random.Next(0, boardHeight);
+
+                // Ensure that the rock is not placed on the snake.
+                while (snake.SnakeElements.Any(e => e.X == x && e.Y == y))
+                {
+                    x = random.Next(0, boardWidth);
+                    y = random.Next(0, boardHeight);
+                }
+
+                rocks.Add(new Rock(x, y));
+            }
+            return rocks;
+        }
     }
 }

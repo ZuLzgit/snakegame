@@ -39,8 +39,22 @@ namespace snakeUI
                 var rectangle = CreateRectangle(snakeElement.X * GridFactor, snakeElement.Y * GridFactor, (snakeElement == snakeHead) ? Colors.LightSkyBlue : Colors.LawnGreen);
                 GameBoard.Children.Add(rectangle);
             }
-
+            foreach (var rock in _gameBoard.Rocks)
+            {
+                var rockRectangle = CreateRectangle(
+                    rock.X * GridFactor,
+                    rock.Y * GridFactor,
+                    Colors.Gray);  
+                GameBoard.Children.Add(rockRectangle);
+            }
+        
+        var appleRectangle = CreateRectangle(
+        _gameBoard.Apple.X * GridFactor,
+        _gameBoard.Apple.Y * GridFactor,
+        Colors.Red);  // Choose a color that represents the apple.
+        GameBoard.Children.Add(appleRectangle);
         }
+
         private Rectangle CreateRectangle(int x, int y, Color color) 
         {
             var rectangle = new Rectangle()
@@ -56,6 +70,7 @@ namespace snakeUI
             };
             return rectangle;
         }
+
         private void Window_Initialized(object sender, EventArgs e)
         {
             GameTimer = new DispatcherTimer();
