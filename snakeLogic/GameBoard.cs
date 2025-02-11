@@ -11,24 +11,25 @@ namespace snakeLogic
 {
     public class GameBoard
     {
+        
         public GameBoard(int height, int width)
         {
             Height = height;
             Width = width;
+            Snake = new Snake(20, 20, 3);
             Rocks = Rock.CreateRocks(10, width, height, Snake);
-            Apple = Apple.CreateApple(width, height, Snake, Rocks);
-
+            Apples = Apple.CreateApples(3, width, height, Snake, Rocks);
         }
         public int Height { get; }
         public int Width { get; }
 
-        public Snake Snake { get; set; } = new Snake(5, 10, 3);
+        public Snake Snake { get; set; } 
         public List<Rock> Rocks { get; set; }
-        public Apple Apple { get; set; }
+        public List<Apple> Apples { get; set; }
         public bool IsGameOver { get; private set; } = false;
         public bool CheckCollisionWithWallsAndRocks(Position newHead)
         {
-            if (newHead.X < 0 || newHead.Y < 0 || newHead.X >= Width || newHead.Y >= Height)
+            if (newHead.X < 0 || newHead.Y < 0 || newHead.X >= Width - 1 || newHead.Y >= Height - 1)
             {
                 return true;
             }
@@ -82,11 +83,14 @@ namespace snakeLogic
                 return;
             }
 
-            if (Apple.CheckCollisionWithApple(newHead))
+            if (Apple.CheckCollisionWithApple(newHead, Apples, out Apple eatenApple))
             {
                 Snake.SnakeElements.Insert(0, newHead);
+                Apples.Remove(eatenApple); // Remove the eaten apple
 
-                Apple = Apple.CreateApple(Width, Height, Snake, Rocks);
+                // Generate a new apple to maintain count
+                Apples.AddRange(Apple.CreateApples(1, Width, Height, Snake, Rocks));
+
                 return;
             }
 

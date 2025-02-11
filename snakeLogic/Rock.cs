@@ -18,8 +18,8 @@ namespace snakeLogic
 
             for (int i = 0; i < rockCount; i++)
             {
-                int x = random.Next(0, boardWidth);
-                int y = random.Next(0, boardHeight);
+                int x = random.Next(0, boardWidth -2);
+                int y = random.Next(0, boardHeight -2);
 
                 // Ensure that the rock is not placed on the snake.
                 while (snake.SnakeElements.Any(e => e.X == x && e.Y == y))

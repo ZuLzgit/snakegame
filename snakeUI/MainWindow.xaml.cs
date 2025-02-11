@@ -18,7 +18,7 @@ namespace snakeUI
     {
         const int GridFactor = 20;
         const int tickSpeedMs = 200;
-        const int PaddingSize = 40;
+        const int BorderOffset = 10;
 
         private GameBoard _gameBoard;
         private DispatcherTimer GameTimer;
@@ -26,16 +26,17 @@ namespace snakeUI
         {
             InitializeComponent();
             _gameBoard = new GameBoard(40, 40);
-            this.Width = (_gameBoard.Width * GridFactor) + PaddingSize;
-            this.Height = (_gameBoard.Height * GridFactor) + PaddingSize;
+            this.Width = (_gameBoard.Width * GridFactor) + BorderOffset * 2;
+            this.Height = (_gameBoard.Height * GridFactor) + BorderOffset * 2;
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            this.ResizeMode = ResizeMode.NoResize;
         }
-        private void DrawGameBoard() 
+        private void DrawGameBoard()
         {
             GameBoard.Background = new SolidColorBrush(Colors.DarkOliveGreen);
             GameBoard.Children.Clear();
             var snakeHead = _gameBoard.Snake.SnakeHead;
-            foreach ( var snakeElement in _gameBoard.Snake.SnakeElements)
+            foreach (var snakeElement in _gameBoard.Snake.SnakeElements)
             {
                 var rectangle = CreateRectangle(snakeElement.X * GridFactor, snakeElement.Y * GridFactor, (snakeElement == snakeHead) ? Colors.LightSkyBlue : Colors.LawnGreen);
                 GameBoard.Children.Add(rectangle);
@@ -45,17 +46,18 @@ namespace snakeUI
                 var rockRectangle = CreateRectangle(
                     rock.X * GridFactor,
                     rock.Y * GridFactor,
-                    Colors.Gray);  
+                    Colors.Gray);
                 GameBoard.Children.Add(rockRectangle);
             }
-        
-        var appleRectangle = CreateRectangle(
-        _gameBoard.Apple.X * GridFactor,
-        _gameBoard.Apple.Y * GridFactor,
-        Colors.Red);  
-        GameBoard.Children.Add(appleRectangle);
+            foreach (var apple in _gameBoard.Apples)
+            {
+                var appleRectangle = CreateRectangle(
+                    apple.X * GridFactor,
+                    apple.Y * GridFactor,
+                    Colors.Red);
+                GameBoard.Children.Add(appleRectangle);
+            }
         }
-
         private Rectangle CreateRectangle(int x, int y, Color color) 
         {
             var rectangle = new Rectangle()

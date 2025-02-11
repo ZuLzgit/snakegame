@@ -12,7 +12,8 @@ namespace snakeLogic
         {
             for (var i = 0; i < length; i++)
             {
-                SnakeElements.Add(new Position(1, i));
+                SnakeElements.Add(new Position(x, y+i))
+;
             }
         }
         public List<Position> SnakeElements { get; } = new List<Position>();
