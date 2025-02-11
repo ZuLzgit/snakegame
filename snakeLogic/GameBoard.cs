@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows;
+
 
 namespace snakeLogic
 {
@@ -20,38 +22,79 @@ namespace snakeLogic
         public int Height { get; }
         public int Width { get; }
 
-        public Snake Snake { get; set; } = new Snake(1, 1, 3);
+        public Snake Snake { get; set; } = new Snake(5, 10, 3);
         public List<Rock> Rocks { get; set; }
         public Apple Apple { get; set; }
-        public void NextStep ()
+        public bool IsGameOver { get; private set; } = false;
+        public bool CheckCollisionWithWallsAndRocks(Position newHead)
         {
-            if (CurrentDirection == Direction.Suspend)
+            if (newHead.X < 0 || newHead.Y < 0 || newHead.X >= Width || newHead.Y >= Height)
+            {
+                return true;
+            }
+            if (Rocks.Any(rock => rock.X == newHead.X && rock.Y == newHead.Y))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void NextStep()
+        {
+            if (CurrentDirection == Direction.Suspend || IsGameOver)
             {
                 return;
             }
+            var snakeHead = Snake.SnakeHead; 
+            int newHeadX = snakeHead.X;
+            int newHeadY = snakeHead.Y;
 
-            var snakeTail = Snake.SnakeTail;
-            var snakeHead = Snake.SnakeHead;
-            snakeTail.X = snakeHead.X;
-            snakeTail.Y = snakeHead.Y;
             switch (CurrentDirection)
             {
                 case Direction.Left:
-                    snakeTail.X--;
+                    newHeadX--;
                     break;
                 case Direction.Up:
-                    snakeTail.Y--;
+                    newHeadY--;
                     break;
                 case Direction.Right:
-                    snakeTail.X++;
+                    newHeadX++;
                     break;
                 case Direction.Down:
-                    snakeTail.Y++;
+                    newHeadY++;
                     break;
             }
-            Snake.SnakeElements.Remove(snakeTail);
-            Snake.SnakeElements.Insert(0, snakeTail);
+
+            Position newHead = new Position(newHeadX, newHeadY);
+
+            if (CheckCollisionWithWallsAndRocks(newHead))
+            {
+                IsGameOver = true;
+                MessageBox.Show("Game Over: Hit a wall or rock!");
+                return;
+            }
+
+            if (Snake.SnakeElements.Any(segment => segment.X == newHead.X && segment.Y == newHead.Y))
+            {
+                IsGameOver = true;
+                MessageBox.Show("Game Over: Collided with itself!");
+                return;
+            }
+
+            if (Apple.CheckCollisionWithApple(newHead))
+            {
+                Snake.SnakeElements.Insert(0, newHead);
+
+                Apple = Apple.CreateApple(Width, Height, Snake, Rocks);
+                return;
+            }
+
+
+            Snake.SnakeElements.Insert(0, newHead); 
+            Snake.SnakeElements.RemoveAt(Snake.SnakeElements.Count - 1);
         }
+
         public Direction CurrentDirection { private get; set; } = Direction.Suspend;
 
 

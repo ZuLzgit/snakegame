@@ -26,6 +26,12 @@ namespace snakeLogic
             }
 
             return new Apple(x, y);
+
         }
+        public bool CheckCollisionWithApple(Position snakeHead)
+        {
+            return (snakeHead.X == this.X && snakeHead.Y == this.Y);
+        }
+
     }
 }

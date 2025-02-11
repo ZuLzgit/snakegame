@@ -13,13 +13,12 @@ using snakeLogic;
 
 namespace snakeUI
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         const int GridFactor = 20;
-        const int tickSpeedMs = 500;
+        const int tickSpeedMs = 200;
+        const int PaddingSize = 40;
 
         private GameBoard _gameBoard;
         private DispatcherTimer GameTimer;
@@ -27,7 +26,9 @@ namespace snakeUI
         {
             InitializeComponent();
             _gameBoard = new GameBoard(40, 40);
-
+            this.Width = (_gameBoard.Width * GridFactor) + PaddingSize;
+            this.Height = (_gameBoard.Height * GridFactor) + PaddingSize;
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
         private void DrawGameBoard() 
         {
@@ -51,7 +52,7 @@ namespace snakeUI
         var appleRectangle = CreateRectangle(
         _gameBoard.Apple.X * GridFactor,
         _gameBoard.Apple.Y * GridFactor,
-        Colors.Red);  // Choose a color that represents the apple.
+        Colors.Red);  
         GameBoard.Children.Add(appleRectangle);
         }
 
@@ -81,12 +82,27 @@ namespace snakeUI
         private void GameTimer_Tick(object? sender, EventArgs e)
         {
             GameTimer.Stop();
+            if (_gameBoard.IsGameOver)
+            {
+                GameTimer.Stop(); 
+                return;
+            }
             _gameBoard.NextStep();
             this.Dispatcher.Invoke(() => 
             { 
                 DrawGameBoard();               
             });
             GameTimer.Start();
+        }
+        private void RestartGame()
+        {
+            GameTimer.Stop();
+
+            _gameBoard = new GameBoard(40, 40);
+
+            GameTimer.Start();
+
+            DrawGameBoard();
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
@@ -103,6 +119,9 @@ namespace snakeUI
                     break;
                 case Key.D:
                     _gameBoard.CurrentDirection = Direction.Right;
+                    break;
+                case Key.R:
+                    RestartGame();
                     break;
             }
         }
