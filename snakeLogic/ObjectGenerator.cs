@@ -15,8 +15,8 @@ namespace snakeLogic
             Random random = new Random();
             for (int i = 0; i < itemCount;)
             {
-                int x = random.Next(1, boardWidth - 2);
-                int y = random.Next(1, boardHeight - 2);
+                int x = random.Next(0, boardWidth);
+                int y = random.Next(0, boardHeight);
 
 
                 if (!snake.SnakeElements.Any(e => e.X == x && e.Y == y) &&

@@ -17,8 +17,8 @@ namespace snakeUI
     public partial class MainWindow : Window
     {
         const int GridFactor = 20;
-        const int tickSpeedMs = 1000;
-        const int BorderOffset = 10;
+        const int tickSpeedMs = 500;
+        const int BorderOffset = 40;
         const int height = 40;
         const int widht = 40;
 
@@ -27,9 +27,6 @@ namespace snakeUI
         public MainWindow()
         {
             InitializeComponent();
-            _gameBoard = new GameBoard(height, widht);
-            this.Width = (_gameBoard.Width * GridFactor) + BorderOffset * 2;
-            this.Height = (_gameBoard.Height * GridFactor) + BorderOffset * 2;
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.ResizeMode = ResizeMode.NoResize;
         }
@@ -86,10 +83,16 @@ namespace snakeUI
 
         private void Window_Initialized(object sender, EventArgs e)
         {
+            _gameBoard = new GameBoard(height, widht);
+            this.Width = (_gameBoard.Width * GridFactor) + BorderOffset;
+            this.Height = (_gameBoard.Height * GridFactor) + BorderOffset +21;
+            this.GameBoard.Height = height * GridFactor;
+            this.GameBoard.Width = widht * GridFactor;
             GameTimer = new DispatcherTimer();
             GameTimer.Tick += GameTimer_Tick;
             GameTimer.Interval = TimeSpan.FromMilliseconds(tickSpeedMs);
             GameTimer.Start();
+
         }
         private void GameTimer_Tick(object? sender, EventArgs e)
         {

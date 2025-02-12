@@ -8,7 +8,6 @@ namespace snakeLogic
 {
     public class Snake
     {
-
         public Snake(int x, int y, int length)
         {
             SnakeElements.Add(new Position(x, y));
@@ -51,7 +50,6 @@ namespace snakeLogic
 
             }
         }
-
         private static Direction getNextDirection(Direction direction)
         {
             switch (direction)
@@ -66,9 +64,7 @@ namespace snakeLogic
                     return Direction.Left;
             }
             return Direction.Left;
-
         }
-
         public List<Position> SnakeElements { get; } = new List<Position>();
 
         public Position SnakeHead => SnakeElements.First();

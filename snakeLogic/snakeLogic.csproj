@@ -43,8 +43,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
-    <Compile Include="Class2.cs" />
     <Compile Include="Apple.cs" />
     <Compile Include="ObjectType.cs" />
     <Compile Include="Direction.cs" />

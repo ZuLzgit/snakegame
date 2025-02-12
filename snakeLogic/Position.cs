@@ -13,6 +13,11 @@ namespace snakeLogic
             X = x;
             Y = y;
         }
+        public bool CheckCollision(Position position)
+        {
+            return this.X == position.X
+                && this.Y == position.Y;
+        }
         public int X { get; set; }
         public int Y { get; set; }
     }

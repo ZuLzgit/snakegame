@@ -12,11 +12,6 @@ namespace snakeLogic
         {
         }
         
-        public static bool CheckCollisionWithApple(Position snakeHead, List<Apple> apples, out Apple eatenApple)
-        {
-            eatenApple = apples.FirstOrDefault(apple => apple.X == snakeHead.X && apple.Y == snakeHead.Y);
-            return eatenApple != null;
-
-        }
+       
     }
 }
