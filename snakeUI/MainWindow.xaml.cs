@@ -17,15 +17,17 @@ namespace snakeUI
     public partial class MainWindow : Window
     {
         const int GridFactor = 20;
-        const int tickSpeedMs = 200;
+        const int tickSpeedMs = 1000;
         const int BorderOffset = 10;
+        const int height = 40;
+        const int widht = 40;
 
         private GameBoard _gameBoard;
         private DispatcherTimer GameTimer;
         public MainWindow()
         {
             InitializeComponent();
-            _gameBoard = new GameBoard(40, 40);
+            _gameBoard = new GameBoard(height, widht);
             this.Width = (_gameBoard.Width * GridFactor) + BorderOffset * 2;
             this.Height = (_gameBoard.Height * GridFactor) + BorderOffset * 2;
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -36,9 +38,17 @@ namespace snakeUI
             GameBoard.Background = new SolidColorBrush(Colors.DarkOliveGreen);
             GameBoard.Children.Clear();
             var snakeHead = _gameBoard.Snake.SnakeHead;
-            foreach (var snakeElement in _gameBoard.Snake.SnakeElements)
+
+            for (int i = 0; i < _gameBoard.Snake.SnakeElements.Count; i++)
             {
-                var rectangle = CreateRectangle(snakeElement.X * GridFactor, snakeElement.Y * GridFactor, (snakeElement == snakeHead) ? Colors.LightSkyBlue : Colors.LawnGreen);
+                var snakeElement = _gameBoard.Snake.SnakeElements[i];
+
+                var rectangle = CreateRectangle(
+                    snakeElement.X * GridFactor,
+                    snakeElement.Y * GridFactor,
+                    (snakeElement == snakeHead) ? Colors.LawnGreen : (i % 2 == 0 ? Colors.ForestGreen : Colors.DarkGreen)
+                );
+
                 GameBoard.Children.Add(rectangle);
             }
             foreach (var rock in _gameBoard.Rocks)
@@ -69,7 +79,7 @@ namespace snakeUI
                 Fill = new SolidColorBrush(color),
                 Width = GridFactor,
                 Height = GridFactor,
-                Stroke = new SolidColorBrush(Colors.Black),
+                //Stroke = new SolidColorBrush(Colors.Black),
             };
             return rectangle;
         }
@@ -100,7 +110,7 @@ namespace snakeUI
         {
             GameTimer.Stop();
 
-            _gameBoard = new GameBoard(40, 40);
+            _gameBoard = new GameBoard(height, widht);
 
             GameTimer.Start();
 

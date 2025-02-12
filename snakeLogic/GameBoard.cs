@@ -14,11 +14,17 @@ namespace snakeLogic
         
         public GameBoard(int height, int width)
         {
+            const int rockCount = 10;
+            const int appleCount = 3;
+            const int snakeLength = 20;
             Height = height;
             Width = width;
-            Snake = new Snake(20, 20, 3);
-            Rocks = Rock.CreateRocks(10, width, height, Snake);
-            Apples = Apple.CreateApples(3, width, height, Snake, Rocks);
+            Snake = new Snake(height/2, height/2, snakeLength);
+            Rocks = new List<Rock>();
+            Apples = new List<Apple>();
+
+            ObjectGenerator.CreateItems(rockCount, width, height, Snake, ObjectType.Stone, Rocks);
+            ObjectGenerator.CreateItems(appleCount, width, height, Snake, ObjectType.Apple, Rocks, Apples);
         }
         public int Height { get; }
         public int Width { get; }
@@ -47,7 +53,7 @@ namespace snakeLogic
             {
                 return;
             }
-            var snakeHead = Snake.SnakeHead; 
+            var snakeHead = Snake.SnakeHead;
             int newHeadX = snakeHead.X;
             int newHeadY = snakeHead.Y;
 
@@ -89,13 +95,13 @@ namespace snakeLogic
                 Apples.Remove(eatenApple); // Remove the eaten apple
 
                 // Generate a new apple to maintain count
-                Apples.AddRange(Apple.CreateApples(1, Width, Height, Snake, Rocks));
+                ObjectGenerator.CreateItems(1, Width, Height, Snake, ObjectType.Apple, Rocks, Apples);
 
                 return;
             }
 
 
-            Snake.SnakeElements.Insert(0, newHead); 
+            Snake.SnakeElements.Insert(0, newHead);
             Snake.SnakeElements.RemoveAt(Snake.SnakeElements.Count - 1);
         }
 
