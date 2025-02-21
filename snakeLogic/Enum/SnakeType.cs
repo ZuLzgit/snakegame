@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace snakeLogic
+namespace snakeLogic.Enum
 {
-    public enum ObjectType
+    public enum SnakeType
     {
-        Apple = 0,
-        Stone = 1,
+        Human,
+        Computer
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace snakeLogic
+namespace snakeLogic.Elements
 {
     public class Position
     {
@@ -20,5 +20,11 @@ namespace snakeLogic
         }
         public int X { get; set; }
         public int Y { get; set; }
+        public int CalcDistance(Position position) 
+        {
+            return Math.Abs(position.X - this.X) + Math.Abs(position.Y - this.Y);
+
+        }
+
     }
 }

@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace snakeLogic
+namespace snakeLogic.Enum
 {
-    public class Rock : Position
+    public enum ObjectType
     {
-        public Rock(int x, int y) : base(x, y)
-        {
-        }
+        Apple = 0,
+        Stone = 1,
     }
 }

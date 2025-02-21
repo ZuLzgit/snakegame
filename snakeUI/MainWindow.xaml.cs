@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using snakeLogic;
+using snakeLogic.Enum;
 
 namespace snakeUI
 {
@@ -17,52 +18,55 @@ namespace snakeUI
     public partial class MainWindow : Window
     {
         const int GridFactor = 20;
-        const int tickSpeedMs = 500;
+        const int TickSpeedMs = 500;
         const int BorderOffset = 40;
-        const int height = 40;
-        const int widht = 40;
+        const int GameBoardHeight = 40;
+        const int GameBoardWidth = 40;
 
-        private GameBoard _gameBoard;
-        private DispatcherTimer GameTimer;
+
         public MainWindow()
         {
             InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.ResizeMode = ResizeMode.NoResize;
         }
+        public DispatcherTimer GameTimer { get; set; }
+        public GameBoard GameBoard { get; set; }
         private void DrawGameBoard()
         {
-            GameBoard.Background = new SolidColorBrush(Colors.DarkOliveGreen);
-            GameBoard.Children.Clear();
-            var snakeHead = _gameBoard.Snake.SnakeHead;
-
-            for (int i = 0; i < _gameBoard.Snake.SnakeElements.Count; i++)
+            GameBoardUI.Background = new SolidColorBrush(Colors.DarkOliveGreen);
+            GameBoardUI.Children.Clear();
+            foreach (var snake in GameBoard.Snakes)
             {
-                var snakeElement = _gameBoard.Snake.SnakeElements[i];
+                for (int i = 0; i < snake.SnakeElements.Count; i++)
+                {
+                    var snakeElement = snake.SnakeElements[i];
 
-                var rectangle = CreateRectangle(
-                    snakeElement.X * GridFactor,
-                    snakeElement.Y * GridFactor,
-                    (snakeElement == snakeHead) ? Colors.LawnGreen : (i % 2 == 0 ? Colors.ForestGreen : Colors.DarkGreen)
-                );
+                    var rectangle = CreateRectangle(
+                        snakeElement.X * GridFactor,
+                        snakeElement.Y * GridFactor,
+                        (Color) ColorConverter.ConvertFromString(snake.GetHexElementColor(i))
+                    );
 
-                GameBoard.Children.Add(rectangle);
+
+                    GameBoardUI.Children.Add(rectangle);
+                }
             }
-            foreach (var rock in _gameBoard.Rocks)
+            foreach (var rock in GameBoard.Rocks)
             {
                 var rockRectangle = CreateRectangle(
                     rock.X * GridFactor,
                     rock.Y * GridFactor,
                     Colors.Gray);
-                GameBoard.Children.Add(rockRectangle);
+                GameBoardUI.Children.Add(rockRectangle);
             }
-            foreach (var apple in _gameBoard.Apples)
+            foreach (var apple in GameBoard.Apples)
             {
                 var appleRectangle = CreateRectangle(
                     apple.X * GridFactor,
                     apple.Y * GridFactor,
                     Colors.Red);
-                GameBoard.Children.Add(appleRectangle);
+                GameBoardUI.Children.Add(appleRectangle);
             }
         }
         private Rectangle CreateRectangle(int x, int y, Color color) 
@@ -83,26 +87,26 @@ namespace snakeUI
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            _gameBoard = new GameBoard(height, widht);
-            this.Width = (_gameBoard.Width * GridFactor) + BorderOffset;
-            this.Height = (_gameBoard.Height * GridFactor) + BorderOffset +21;
-            this.GameBoard.Height = height * GridFactor;
-            this.GameBoard.Width = widht * GridFactor;
+            this.Width = (GameBoardWidth * GridFactor) + BorderOffset;
+            this.Height = (GameBoardHeight * GridFactor) + BorderOffset +21;
+            this.GameBoardUI.Height = Height * GridFactor;
+            this.GameBoardUI.Width = Width * GridFactor;
             GameTimer = new DispatcherTimer();
             GameTimer.Tick += GameTimer_Tick;
-            GameTimer.Interval = TimeSpan.FromMilliseconds(tickSpeedMs);
+            GameTimer.Interval = TimeSpan.FromMilliseconds(TickSpeedMs);
             GameTimer.Start();
+            RestartGame();
 
         }
         private void GameTimer_Tick(object? sender, EventArgs e)
         {
             GameTimer.Stop();
-            if (_gameBoard.IsGameOver)
+            if (GameBoard.IsGameOver)
             {
                 GameTimer.Stop(); 
                 return;
             }
-            _gameBoard.NextStep();
+            GameBoard.NextStep();
             this.Dispatcher.Invoke(() => 
             { 
                 DrawGameBoard();               
@@ -113,7 +117,7 @@ namespace snakeUI
         {
             GameTimer.Stop();
 
-            _gameBoard = new GameBoard(height, widht);
+            GameBoard = new GameBoard(GameBoardHeight, GameBoardWidth, 100, 10, 40, Colors.Black.ToString());
 
             GameTimer.Start();
 
@@ -121,24 +125,33 @@ namespace snakeUI
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.Key)
+            if (e.Key == Key.R)
             {
-                case Key.W:
-                    _gameBoard.CurrentDirection = Direction.Up;
-                    break;
-                case Key.A:
-                    _gameBoard.CurrentDirection = Direction.Left;
-                    break;
-                case Key.S:
-                    _gameBoard.CurrentDirection = Direction.Down;
-                    break;
-                case Key.D:
-                    _gameBoard.CurrentDirection = Direction.Right;
-                    break;
-                case Key.R:
-                    RestartGame();
-                    break;
+                RestartGame();
             }
+            else
+            {
+                foreach (var snake in GameBoard.Snakes.Where(w => w.SnakeType == SnakeType.Human))
+                {
+                    switch (e.Key)
+                    {
+                        case Key.W:
+                            snake.SnakeDirection = Direction.Up;
+                            break;
+                        case Key.A:
+                            snake.SnakeDirection = Direction.Left;
+                            break;
+                        case Key.S:
+                            snake.SnakeDirection = Direction.Down;
+                            break;
+                        case Key.D:
+                            snake.SnakeDirection = Direction.Right;
+                            break;
+                    }
+                }
+
+            }
+           
         }
     }
 }

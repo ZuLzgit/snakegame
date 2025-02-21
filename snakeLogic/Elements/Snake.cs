@@ -1,21 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using snakeLogic.Enum;
 
-namespace snakeLogic
+
+namespace snakeLogic.Elements
 {
     public class Snake
     {
-        public Snake(int x, int y, int length)
+        public string HexHeadColor { get; set; }
+        public string HexBodyColor1 { get; set; }
+        public string HexBodyColor2 { get; set; }
+        public Snake(int x, int y, int length, SnakeType snakeType, string hexHeadColor, string hexBodyColor1, string hexBodyColor2)
         {
+
+            HexHeadColor = hexHeadColor;
+            HexBodyColor1 = hexBodyColor1;
+            HexBodyColor2 = hexBodyColor2;
+            SnakeType = snakeType;
             SnakeElements.Add(new Position(x, y));
 
             var direction = Direction.Left;
             var segments = 0;
             var steps = 1;
             bool addStep = true;
+            SnakeType = snakeType;
 
             for (int i = 1; i < length; i++)
             {
@@ -46,7 +54,7 @@ namespace snakeLogic
                         steps++;
                     }
                 }
-                
+
 
             }
         }
@@ -65,10 +73,18 @@ namespace snakeLogic
             }
             return Direction.Left;
         }
-        public List<Position> SnakeElements { get; } = new List<Position>();
 
+        public List<Position> SnakeElements { get; } = new List<Position>();
         public Position SnakeHead => SnakeElements.First();
         public Position SnakeTail => SnakeElements.Last();
+        public SnakeType SnakeType { get; }
+        public Direction SnakeDirection { get; set; } = Direction.Suspend;
+
+        public string GetHexElementColor(int index)
+        {
+            return index == 0 ? HexHeadColor : (index % 2 == 0 ? HexBodyColor1 : HexBodyColor2);
+
+        }
     }
 }
 

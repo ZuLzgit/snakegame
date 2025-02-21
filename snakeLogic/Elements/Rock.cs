@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace snakeLogic
+namespace snakeLogic.Elements
 {
-    public class Apple : Position
+    public class Rock : Position
     {
-        public Apple(int x, int y) : base(x, y)
+        public Rock(int x, int y) : base(x, y)
         {
         }
-        
-       
     }
 }

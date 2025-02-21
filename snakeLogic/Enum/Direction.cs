@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace snakeLogic
+namespace snakeLogic.Enum
 {
     public enum Direction
     {
@@ -15,3 +15,4 @@ namespace snakeLogic
         Down = 4,
     }
 }
+

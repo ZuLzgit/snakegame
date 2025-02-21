@@ -1,4 +1,5 @@
 using snakeLogic;
+using snakeLogic.Elements;
 
 namespace snakeTest
 {
@@ -7,7 +8,6 @@ namespace snakeTest
         [Theory]
         [InlineData(1, 1, false)]
         [InlineData(10, 10, true)]
-
         public void CheckCollision_WithPosition_ExpectedResult(int x, int y, bool expectedResult)
         {
             //Arrange
