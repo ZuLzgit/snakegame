@@ -80,15 +80,14 @@ namespace snakeUI
                 Fill = new SolidColorBrush(color),
                 Width = GridFactor,
                 Height = GridFactor,
-                //Stroke = new SolidColorBrush(Colors.Black),
             };
             return rectangle;
         }
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            this.Width = (GameBoardWidth * GridFactor) + BorderOffset;
-            this.Height = (GameBoardHeight * GridFactor) + BorderOffset +21;
+            this.Width = (GameBoardWidth * GridFactor) + BorderOffset - 22;
+            this.Height = (GameBoardHeight * GridFactor) + BorderOffset;
             this.GameBoardUI.Height = Height * GridFactor;
             this.GameBoardUI.Width = Width * GridFactor;
             GameTimer = new DispatcherTimer();
@@ -117,7 +116,7 @@ namespace snakeUI
         {
             GameTimer.Stop();
 
-            GameBoard = new GameBoard(GameBoardHeight, GameBoardWidth, 10, 3, 25, Colors.Black.ToString());
+            GameBoard = new GameBoard(GameBoardHeight, GameBoardWidth, 10, 3, 25);
 
             GameTimer.Start();
 
