@@ -23,9 +23,9 @@ namespace snakeLogic
             int rockCount = 10,
             int appleCount = 3,
             int snakeStartLength = 25,
-            string humanSnakeHexHeadColor = "#03adfc",
-            string humanSnakeHexBodyColor1 = "#C11A30",
-            string humanSnakeHexBodyColor2 = "#ffeeee",
+            string humanSnakeHexHeadColor = "#00a12b",
+            string humanSnakeHexBodyColor1 = "#09aa21",
+            string humanSnakeHexBodyColor2 = "#0c611e",
             string comuterSnakeHexHeadColor = "#420f11",
             string comuterSnakeHexBodyColor1 = "#42270f",
             string comuterSnakeHexBodyColor2 = "#293012"
