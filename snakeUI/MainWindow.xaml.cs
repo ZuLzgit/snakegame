@@ -117,7 +117,7 @@ namespace snakeUI
         {
             GameTimer.Stop();
 
-            GameBoard = new GameBoard(GameBoardHeight, GameBoardWidth, 100, 10, 40, Colors.Black.ToString());
+            GameBoard = new GameBoard(GameBoardHeight, GameBoardWidth, 10, 3, 25, Colors.Black.ToString());
 
             GameTimer.Start();
 
