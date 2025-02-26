@@ -56,9 +56,22 @@ namespace snakeLogic
             {
                 return EndGameReason.RockCollision;
             }
-            if (Snakes.SelectMany(s => s.SnakeElements).Any(segment => segment.X == position.X && segment.Y == position.Y))
+            //first or default anstatt any mit snaketype
+            //for schleife ^collision überprüfen und auf eigene schlange checken
+            foreach (var snake in Snakes)
             {
-                return EndGameReason.SelfCollision;
+                var collisionElement = Snakes.SelectMany(s => s.SnakeElements).FirstOrDefault(segment => segment.X == position.X && segment.Y == position.Y);
+                if (collisionElement != null)
+                {
+                    if (snake.SnakeElements.Contains(collisionElement))
+                    {
+                        return EndGameReason.SelfCollision;
+                    }
+                    else
+                    {
+                        return EndGameReason.SnakeCollision;
+                    }
+                }
             }
             return EndGameReason.None;
         }
@@ -96,7 +109,7 @@ namespace snakeLogic
                             MessageBox.Show("Game Over: Hit a rock!");
                             break;
                         case EndGameReason.SelfCollision:
-                            MessageBox.Show("Game Over: Collided with itself or another snake!");
+                            MessageBox.Show("Game Over: Collided with itself!");
                             break;
                         case EndGameReason.SnakeCollision:
                             MessageBox.Show("Game Over: Collided with another snake!");
