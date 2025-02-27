@@ -15,7 +15,7 @@ namespace snakeLogic
 {
     public class GameBoard
     {
-
+        Random Random = new Random();
         public GameBoard
             (
             int height,
@@ -75,6 +75,7 @@ namespace snakeLogic
             }
             return EndGameReason.None;
         }
+        
 
         public Apple CheckCollisionApple(Position position)
         {
@@ -156,77 +157,99 @@ namespace snakeLogic
 
             return newHead;
         }
+        public Position CheckNewPosition(Snake snake)
+        {
+            var changeX = (snake.SnakeDirection == Direction.Left) ? -1 : (snake.SnakeDirection == Direction.Right) ? +1 : 0;
+            var changeY = (snake.SnakeDirection == Direction.Up) ? -1 : (snake.SnakeDirection == Direction.Down) ? +1 : 0;
+            var newPosition = new Position(snake.SnakeHead.X + changeX, snake.SnakeHead.Y + changeY);
+            return (CheckCollisionEnd(newPosition) == EndGameReason.None) ? newPosition: null;
+            
+        }
         public Position CalcNewPositionComputerSnake(Snake snake)
         {
             Position newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y);
-            Snake humanSnake = Snakes.FirstOrDefault(s => s.SnakeType == SnakeType.Human);
+            var humanSnakeHeads = Snakes.Where(s => s.SnakeType == SnakeType.Human).Select(s => s.SnakeHead);
 
-            Apple targetApple;
-            var validApples = Apples
-                .Where(apple => snake.SnakeHead.CalcDistance(apple) <= humanSnake.SnakeHead.CalcDistance(apple))
-                .ToList();
+            var targetApple = Apples
+                .OrderBy(apple => humanSnakeHeads.All(hsh => snake.SnakeHead.CalcDistance(apple) <= hsh.CalcDistance(apple)) ? 0 : 1)
+                .ThenBy(apple => snake.SnakeHead.CalcDistance(apple))
+                .First();
 
-            if (validApples.Any())
+            var possibleDirections1 = new List<Direction>();
+            if (targetApple.X < snake.SnakeHead.X) possibleDirections1.Add(Direction.Left);
+            if (targetApple.X > snake.SnakeHead.X) possibleDirections1.Add(Direction.Right);
+            if (targetApple.Y < snake.SnakeHead.Y) possibleDirections1.Add(Direction.Up);
+            if (targetApple.Y > snake.SnakeHead.Y) possibleDirections1.Add(Direction.Down);
+            possibleDirections1 = possibleDirections1.OrderBy(p => Random.Next(0, 99999)).ToList();
+
+            var possibleDirections2 = new List<Direction>
             {
-                targetApple = validApples.OrderBy(apple => snake.SnakeHead.CalcDistance(apple)).First();
+                Direction.Left,
+                Direction.Right,
+                Direction.Up,
+                Direction.Down
+            };
+            possibleDirections2 = possibleDirections2.Except(possibleDirections1).OrderBy(p => Random.Next(0, 99999)).ToList();
+
+            foreach (var possibleDirection in possibleDirections1.Union(possibleDirections2))
+            {
+                snake.SnakeDirection = possibleDirection;
+                newHead = CheckNewPosition(snake);
+                if (newHead != null) break;
             }
-            else
-            {
-                targetApple = Apples.OrderBy(apple => snake.SnakeHead.CalcDistance(apple)).First();
-            }
 
-            do
-            {
-                newHead = new Position(snake.SnakeHead.X - 1, snake.SnakeHead.Y);
-                if (targetApple.X < snake.SnakeHead.X && CheckCollisionEnd(newHead) == EndGameReason.None)
-                {
-                    snake.SnakeDirection = Direction.Left;
-                    break;
-                }
-                newHead = new Position(snake.SnakeHead.X + 1, snake.SnakeHead.Y);
-                if (targetApple.X > snake.SnakeHead.X && CheckCollisionEnd(newHead) == EndGameReason.None)
-                {
-                    snake.SnakeDirection = Direction.Right;
-                    break;
-                }
-                newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y - 1);
-                if (targetApple.Y < snake.SnakeHead.Y && CheckCollisionEnd(newHead) == EndGameReason.None)
-                {
-                    snake.SnakeDirection = Direction.Up;
-                    break;
-                }
-                newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y + 1);
-                if (targetApple.Y > snake.SnakeHead.Y && CheckCollisionEnd(newHead) == EndGameReason.None)
-                {
-                    snake.SnakeDirection = Direction.Down;
-                    break;
-                }
+            //do
+            //{
+            //    if (targetApple.X < snake.SnakeHead.X)
+            //    {
+            //        snake.SnakeDirection = Direction.Left;
+            //        newHead = CheckNewPosition(snake);
+            //        if (newHead != null) break;
+            //    }
+            //    newHead = new Position(snake.SnakeHead.X + 1, snake.SnakeHead.Y);
+            //    if (targetApple.X > snake.SnakeHead.X && CheckCollisionEnd(newHead) == EndGameReason.None)
+            //    {
+            //        snake.SnakeDirection = Direction.Right;
+            //        break;
+            //    }
+            //    newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y - 1);
+            //    if (targetApple.Y < snake.SnakeHead.Y && CheckCollisionEnd(newHead) == EndGameReason.None)
+            //    {
+            //        snake.SnakeDirection = Direction.Up;
+            //        break;
+            //    }
+            //    newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y + 1);
+            //    if (targetApple.Y > snake.SnakeHead.Y && CheckCollisionEnd(newHead) == EndGameReason.None)
+            //    {
+            //        snake.SnakeDirection = Direction.Down;
+            //        break;
+            //    }
 
-                newHead = new Position(snake.SnakeHead.X - 1, snake.SnakeHead.Y);
-                if (CheckCollisionEnd(newHead) == EndGameReason.None)
-                {
-                    snake.SnakeDirection = Direction.Left;
-                    break;
-                }
-                newHead = new Position(snake.SnakeHead.X + 1, snake.SnakeHead.Y);
-                if (CheckCollisionEnd(newHead) == EndGameReason.None)
-                {
-                    snake.SnakeDirection = Direction.Right;
-                    break;
-                }
-                newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y - 1);
-                if (CheckCollisionEnd(newHead) == EndGameReason.None)
-                {
-                    snake.SnakeDirection = Direction.Up;
-                    break;
-                }
-                newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y + 1);
-                if (CheckCollisionEnd(newHead) == EndGameReason.None)
-                {
-                    snake.SnakeDirection = Direction.Down;
-                    break;
-                }
-            } while (false);
+            //    newHead = new Position(snake.SnakeHead.X - 1, snake.SnakeHead.Y);
+            //    if (CheckCollisionEnd(newHead) == EndGameReason.None)
+            //    {
+            //        snake.SnakeDirection = Direction.Left;
+            //        break;
+            //    }
+            //    newHead = new Position(snake.SnakeHead.X + 1, snake.SnakeHead.Y);
+            //    if (CheckCollisionEnd(newHead) == EndGameReason.None)
+            //    {
+            //        snake.SnakeDirection = Direction.Right;
+            //        break;
+            //    }
+            //    newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y - 1);
+            //    if (CheckCollisionEnd(newHead) == EndGameReason.None)
+            //    {
+            //        snake.SnakeDirection = Direction.Up;
+            //        break;
+            //    }
+            //    newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y + 1);
+            //    if (CheckCollisionEnd(newHead) == EndGameReason.None)
+            //    {
+            //        snake.SnakeDirection = Direction.Down;
+            //        break;
+            //    }
+            //} while (false);
 
             return newHead;
         }

@@ -8,7 +8,9 @@
         Title="MainWindow" Height="450" Width="800" Initialized="Window_Initialized" KeyDown="Window_KeyDown">
     <Grid>
         <Border BorderBrush="Black" BorderThickness="1" Margin="0">
-            <Canvas x:Name="GameBoardUI" Background="DarkOliveGreen"/>
+            <Canvas x:Name="GameBoardUI" Background="DarkOliveGreen" Margin="20"/>
+                <!--<TextBox Canvas.Left="231" TextWrapping="Wrap" Text="TextBox" Canvas.Top="178" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <TextBox Canvas.Left="407" TextWrapping="Wrap" Text="TextBox" Canvas.Top="178" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"/>-->
         </Border>
     </Grid>
 </Window>

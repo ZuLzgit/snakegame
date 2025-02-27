@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Numerics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -17,23 +18,27 @@ namespace snakeUI
 
     public partial class MainWindow : Window
     {
-        const int GridFactor = 20;
+//        const int GridFactor = 20;
         const int TickSpeedMs = 500;
         const int BorderOffset = 40;
         const int GameBoardHeight = 40;
         const int GameBoardWidth = 40;
+        
+
 
 
         public MainWindow()
         {
             InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            this.ResizeMode = ResizeMode.NoResize;
+            //this.ResizeMode = ResizeMode.NoResize;
         }
         public DispatcherTimer GameTimer { get; set; }
         public GameBoard GameBoard { get; set; }
         private void DrawGameBoard()
         {
+            var gridFactorX = GameBoardUI.ActualWidth / GameBoardWidth;
+            var gridFactorY = GameBoardUI.ActualHeight / GameBoardHeight;
             GameBoardUI.Background = new SolidColorBrush(Colors.DarkOliveGreen);
             GameBoardUI.Children.Clear();
             foreach (var snake in GameBoard.Snakes)
@@ -43,11 +48,12 @@ namespace snakeUI
                     var snakeElement = snake.SnakeElements[i];
 
                     var rectangle = CreateRectangle(
-                        snakeElement.X * GridFactor,
-                        snakeElement.Y * GridFactor,
+                        snakeElement.X * gridFactorX,
+                        snakeElement.Y * gridFactorY,
+                        gridFactorX,
+                        gridFactorY,
                         (Color) ColorConverter.ConvertFromString(snake.GetHexElementColor(i))
                     );
-
 
                     GameBoardUI.Children.Add(rectangle);
                 }
@@ -55,21 +61,25 @@ namespace snakeUI
             foreach (var rock in GameBoard.Rocks)
             {
                 var rockRectangle = CreateRectangle(
-                    rock.X * GridFactor,
-                    rock.Y * GridFactor,
+                    rock.X * gridFactorX,
+                    rock.Y * gridFactorY,
+                    gridFactorX,
+                    gridFactorY,
                     Colors.Gray);
                 GameBoardUI.Children.Add(rockRectangle);
             }
             foreach (var apple in GameBoard.Apples)
             {
                 var appleRectangle = CreateRectangle(
-                    apple.X * GridFactor,
-                    apple.Y * GridFactor,
+                    apple.X * gridFactorX,
+                    apple.Y * gridFactorY,
+                    gridFactorX,
+                    gridFactorY,
                     Colors.Red);
                 GameBoardUI.Children.Add(appleRectangle);
             }
         }
-        private Rectangle CreateRectangle(int x, int y, Color color) 
+        private Rectangle CreateRectangle(double x, double y, double width, double height ,Color color) 
         {
             var rectangle = new Rectangle()
             {
@@ -78,18 +88,18 @@ namespace snakeUI
                 VerticalAlignment = VerticalAlignment.Top,
                 Visibility = Visibility.Visible,
                 Fill = new SolidColorBrush(color),
-                Width = GridFactor,
-                Height = GridFactor,
+                Width = width,
+                Height = height,
             };
             return rectangle;
         }
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            this.Width = (GameBoardWidth * GridFactor) + BorderOffset - 22;
-            this.Height = (GameBoardHeight * GridFactor) + BorderOffset;
-            this.GameBoardUI.Height = Height * GridFactor;
-            this.GameBoardUI.Width = Width * GridFactor;
+            //this.Width = (GameBoardWidth * GridFactor) + BorderOffset - 22;
+            //this.Height = (GameBoardHeight * GridFactor) + BorderOffset;
+            //this.GameBoardUI.Height = Height * GridFactor;
+            //this.GameBoardUI.Width = Width * GridFactor;
             GameTimer = new DispatcherTimer();
             GameTimer.Tick += GameTimer_Tick;
             GameTimer.Interval = TimeSpan.FromMilliseconds(TickSpeedMs);
