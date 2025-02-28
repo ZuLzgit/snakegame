@@ -79,7 +79,7 @@ namespace snakeLogic.Elements
         public Position SnakeTail => SnakeElements.Last();
         public SnakeType SnakeType { get; }
         public Direction SnakeDirection { get; set; } = Direction.Suspend;
-
+        public int ApplesEaten { get; set; } = 0;
         public string GetHexElementColor(int index)
         {
             return index == 0 ? HexHeadColor : (index % 2 == 0 ? HexBodyColor1 : HexBodyColor2);

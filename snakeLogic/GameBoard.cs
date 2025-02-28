@@ -40,6 +40,7 @@ namespace snakeLogic
             ObjectGenerator.CreateItems(rockCount, width, height, Snakes, ObjectType.Stone, Rocks);
             ObjectGenerator.CreateItems(appleCount, width, height, Snakes, ObjectType.Apple, Rocks, Apples);
         }
+        public event Action OnAppleEaten;
         public int Height { get; }
         public int Width { get; }
         public List<Snake> Snakes { get; set; } = new List<Snake>();
@@ -98,8 +99,6 @@ namespace snakeLogic
                 if (collisionReason != EndGameReason.None)
                 {
                     IsGameOver = true;
-                    string message;
-
 
                     switch (collisionReason)
                     {
@@ -120,13 +119,19 @@ namespace snakeLogic
                             break;
                     }
                 }
-
+                
                 var eatenApple = CheckCollisionApple(newHead);
                 if (eatenApple != null)
                 {
                     snake.SnakeElements.Insert(0, newHead);
                     Apples.Remove(eatenApple);
                     ObjectGenerator.CreateItems(1, Width, Height, Snakes, ObjectType.Apple, Rocks, Apples);
+
+                    snake.ApplesEaten++;
+                    if (OnAppleEaten != null)
+                    {
+                        OnAppleEaten.Invoke();
+                    }
                 }
                 else
                 {

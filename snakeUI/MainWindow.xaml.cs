@@ -21,9 +21,11 @@ namespace snakeUI
 //        const int GridFactor = 20;
         const int TickSpeedMs = 500;
         const int BorderOffset = 40;
-        const int GameBoardHeight = 40;
-        const int GameBoardWidth = 40;
-        
+        //const int GameBoardHeight = 40;
+        //const int GameBoardWidth = 40;
+        private int GameBoardHeight = 40;
+        private int GameBoardWidth = 40;
+
 
 
 
@@ -93,6 +95,8 @@ namespace snakeUI
             };
             return rectangle;
         }
+        
+
 
         private void Window_Initialized(object sender, EventArgs e)
         {
@@ -104,7 +108,7 @@ namespace snakeUI
             GameTimer.Tick += GameTimer_Tick;
             GameTimer.Interval = TimeSpan.FromMilliseconds(TickSpeedMs);
             GameTimer.Start();
-            RestartGame();
+            RestartGame(GameBoardHeight, GameBoardWidth);
 
         }
         private void GameTimer_Tick(object? sender, EventArgs e)
@@ -122,21 +126,52 @@ namespace snakeUI
             });
             GameTimer.Start();
         }
-        private void RestartGame()
+        private void UpdateAppleCounterUI()
+        {
+            ScoreBoard.Children.Clear();
+            ScoreBoard.Children.Add(new TextBlock { Text = "Scores:", FontSize = 16, FontWeight = FontWeights.Bold });
+
+            foreach (var snake in GameBoard.Snakes)
+            {
+                var snakeScore = new TextBlock
+                {
+                    Text = $"{(snake.SnakeType == SnakeType.Human ? "Player" : "Computer")} Apples Eaten: {snake.ApplesEaten}",
+                    FontSize = 14
+                };
+                ScoreBoard.Children.Add(snakeScore);
+            }
+        }
+        private void RestartGame(int height, int width)
         {
             GameTimer.Stop();
-
-            GameBoard = new GameBoard(GameBoardHeight, GameBoardWidth, 10, 3, 25);
-
+            GameBoard = new GameBoard(height, width, 10, 3, 25);
+            GameBoard.OnAppleEaten += UpdateAppleCounterUI;
             GameTimer.Start();
-
             DrawGameBoard();
+            UpdateAppleCounterUI();
         }
+        private void StartGame_Click(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(WidthInput.Text, out int width) && int.TryParse(HeightInput.Text, out int height))
+            {
+                GameBoardWidth = width;
+                GameBoardHeight = height;
+                StartMenu.Visibility = Visibility.Collapsed; // Hide UI
+                GameTimer.Start();
+                RestartGame(GameBoardHeight, GameBoardWidth);
+            }
+            else
+            {
+                MessageBox.Show("Please enter valid numbers for the game board size.");
+            }
+        }
+
+
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.R)
             {
-                RestartGame();
+                RestartGame(GameBoardHeight, GameBoardWidth);
             }
             else
             {

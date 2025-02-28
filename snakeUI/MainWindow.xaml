@@ -5,12 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:snakeUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Initialized="Window_Initialized" KeyDown="Window_KeyDown">
+        Title="Snake Game" Height="450" Width="800" Initialized="Window_Initialized" KeyDown="Window_KeyDown">
+
     <Grid>
+        <!-- Game Board UI -->
         <Border BorderBrush="Black" BorderThickness="1" Margin="0">
-            <Canvas x:Name="GameBoardUI" Background="DarkOliveGreen" Margin="20"/>
-                <!--<TextBox Canvas.Left="231" TextWrapping="Wrap" Text="TextBox" Canvas.Top="178" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <TextBox Canvas.Left="407" TextWrapping="Wrap" Text="TextBox" Canvas.Top="178" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"/>-->
+            <Canvas x:Name="GameBoardUI" Background="DarkOliveGreen" Margin="20,60,80,20">
+            </Canvas>
         </Border>
+
+        <!-- Scoreboard UI -->
+        <StackPanel x:Name="ScoreBoard" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" Background="White" Margin="0">
+            <TextBlock Text="Scores:" FontSize="16" FontWeight="Bold"/>
+        </StackPanel>
+
+        <!-- Start Menu UI -->
+        <StackPanel x:Name="StartMenu" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Background="LightGray" Width="300">
+            <Border Padding="20">
+                <StackPanel>
+                    <TextBlock Text="Game Board Width:" Margin="5"/>
+                    <TextBox x:Name="WidthInput" Text="40" Width="200" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Game Board Height:" Margin="5"/>
+                    <TextBox x:Name="HeightInput" Text="40" Width="200" HorizontalAlignment="Center"/>
+                    <Button Content="Start Game" Click="StartGame_Click" Margin="10" Width="200" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
     </Grid>
 </Window>
