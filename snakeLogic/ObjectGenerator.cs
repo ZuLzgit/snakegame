@@ -15,31 +15,47 @@ namespace snakeLogic
         public static void CreateItems(int itemCount, int boardWidth, int boardHeight, List<Snake> snakes, ObjectType objectType, List<Rock> rocks = null, List<Apple> apples = null) 
         {
             Random random = new Random();
-            for (int i = 0; i < itemCount;)
+            var freeElements = new List<Position>();
+            for (int x = 0; x < boardWidth; x++)
             {
-                int x = random.Next(0, boardWidth);
-                int y = random.Next(0, boardHeight);
-
-
-                bool occupiedBySnake = snakes.Any(snake => snake.SnakeElements.Any(e => e.X == x && e.Y == y));
-
-
-                if (!occupiedBySnake &&
-                    (rocks == null || !rocks.Any(r => r.X == x && r.Y == y)) &&
-                    (apples == null || !apples.Any(a => a.X == x && a.Y == y)))
+                for (int y = 0; y < boardHeight; y++)
                 {
-                    switch (objectType)
+                    bool occupiedBySnake = snakes.Any(snake => snake.SnakeElements.Any(se => se.X == x && se.Y == y));
+                    bool occupiedByApple = apples != null && apples.Any(a => a.X == x && a.Y == y);
+                    bool occupiedByRock = rocks != null && rocks.Any(r => r.X == x && r.Y == y);
+
+                    if (!occupiedBySnake && !occupiedByApple && !occupiedByRock)
                     {
-                        case ObjectType.Apple:
-                            apples.Add(new Apple(x, y));
-                            break;
-                        case ObjectType.Stone:
-                            rocks.Add(new Rock(x, y));
-                            break;
+                        var position = new Position(x, y);
+                        freeElements.Add(position);
                     }
-                    i++;
+
                 }
             }
+
+            for (int i = 0; i < itemCount; i++)
+            {
+                if (freeElements.Count == 0)
+                {
+                    break;
+                }
+                var idx = random.Next(freeElements.Count);
+                var randomFreeElement = freeElements.ElementAt(idx);
+
+                switch (objectType)
+                {
+                    case ObjectType.Apple:
+                        apples.Add(new Apple(randomFreeElement.X, randomFreeElement.Y));
+                        break;
+                    case ObjectType.Stone:
+                        rocks.Add(new Rock(randomFreeElement.X, randomFreeElement.Y));
+                        break;
+                }
+                freeElements.Remove(randomFreeElement);
+
+            }
+            
+              
         }
 
     }

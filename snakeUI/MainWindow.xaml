@@ -7,19 +7,16 @@
         mc:Ignorable="d"
         Title="Snake Game" Height="450" Width="800" Initialized="Window_Initialized" KeyDown="Window_KeyDown">
 
-    <Grid>
-        <!-- Game Board UI -->
-        <Border BorderBrush="Black" BorderThickness="1" Margin="0">
-            <Canvas x:Name="GameBoardUI" Background="DarkOliveGreen" Margin="20,60,80,20">
+    <Grid Background="DarkGreen">
+        <Border BorderBrush="Black" BorderThickness="1" Margin="0,60,0,0">
+            <Canvas x:Name="GameBoardUI" Background="DarkOliveGreen" >
             </Canvas>
         </Border>
 
-        <!-- Scoreboard UI -->
-        <StackPanel x:Name="ScoreBoard" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" Background="White" Margin="0">
+        <StackPanel x:Name="ScoreBoard" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" Background="DarkGreen" Margin="80, 0">
             <TextBlock Text="Scores:" FontSize="16" FontWeight="Bold"/>
         </StackPanel>
 
-        <!-- Start Menu UI -->
         <StackPanel x:Name="StartMenu" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Background="LightGray" Width="300">
             <Border Padding="20">
                 <StackPanel>

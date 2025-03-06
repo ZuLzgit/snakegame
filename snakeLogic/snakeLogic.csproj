@@ -47,10 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Elements\Apple.cs" />
+    <Compile Include="Elements\Teleporter.cs" />
     <Compile Include="Enum\EndGameReason.cs" />
     <Compile Include="Enum\ObjectType.cs" />
     <Compile Include="Enum\Direction.cs" />
     <Compile Include="GameBoard.cs" />
+    <Compile Include="Interfaces\IPosition.cs" />
     <Compile Include="ObjectGenerator.cs" />
     <Compile Include="Elements\Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

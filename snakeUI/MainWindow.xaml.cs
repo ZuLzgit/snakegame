@@ -25,7 +25,16 @@ namespace snakeUI
         //const int GameBoardWidth = 40;
         private int GameBoardHeight = 40;
         private int GameBoardWidth = 40;
-
+        private int SnakeLength = 20;
+        private int AppleCount = 20;
+        private int RockCount = 100;
+        private string HumanSnakeHexHeadColor = "#42270f";
+        private string HumanSnakeHexBodyColor1 = "#09aa21";
+        private string HumanSnakeHexBodyColor2 = "#0c611e";
+        private string ComuterSnakeHexHeadColor = "#420f11";
+        private string ComuterSnakeHexBodyColor1 = "#42270f";
+        private string ComuterSnakeHexBodyColor2 = "#293012";
+        
 
 
 
@@ -144,7 +153,20 @@ namespace snakeUI
         private void RestartGame(int height, int width)
         {
             GameTimer.Stop();
-            GameBoard = new GameBoard(height, width, 10, 3, 25);
+            GameBoard = new GameBoard
+                (
+                height,
+                width,
+                RockCount,
+                AppleCount,
+                SnakeLength,
+                HumanSnakeHexHeadColor,
+                HumanSnakeHexBodyColor1,
+                HumanSnakeHexBodyColor2,
+                ComuterSnakeHexHeadColor,
+                ComuterSnakeHexBodyColor1,
+                ComuterSnakeHexBodyColor2 );
+
             GameBoard.OnAppleEaten += UpdateAppleCounterUI;
             GameTimer.Start();
             DrawGameBoard();
@@ -154,9 +176,26 @@ namespace snakeUI
         {
             if (int.TryParse(WidthInput.Text, out int width) && int.TryParse(HeightInput.Text, out int height))
             {
+                var minWidth = SnakeLength * 2;
+                var minHeight = SnakeLength * 2;
+                bool correctSize = false;
+                if (width < minWidth)
+                {
+                    WidthInput.Text = minWidth.ToString();
+                    correctSize = true;
+                }
+                if (height < minHeight)
+                {
+                    HeightInput.Text = minHeight.ToString();
+                    correctSize = true;
+                }
+                if (correctSize)
+                {
+                    return;
+                }
                 GameBoardWidth = width;
                 GameBoardHeight = height;
-                StartMenu.Visibility = Visibility.Collapsed; // Hide UI
+                StartMenu.Visibility = Visibility.Collapsed;
                 GameTimer.Start();
                 RestartGame(GameBoardHeight, GameBoardWidth);
             }

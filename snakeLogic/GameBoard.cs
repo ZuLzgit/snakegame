@@ -9,6 +9,7 @@ using snakeLogic.Enum;
 using snakeLogic.Elements;
 using System.Windows.Documents;
 using System.Windows.Media;
+using snakeLogic.Interfaces;
 
 
 namespace snakeLogic
@@ -20,10 +21,10 @@ namespace snakeLogic
             (
             int height,
             int width,
-            int rockCount = 10,
-            int appleCount = 3,
-            int snakeStartLength = 25,
-            string humanSnakeHexHeadColor = "#00a12b",
+            int rockCount,
+            int appleCount,
+            int snakeStartLength,
+            string humanSnakeHexHeadColor = "#42270f",
             string humanSnakeHexBodyColor1 = "#09aa21",
             string humanSnakeHexBodyColor2 = "#0c611e",
             string comuterSnakeHexHeadColor = "#420f11",
@@ -33,8 +34,8 @@ namespace snakeLogic
         {
             Height = height;
             Width = width;
-            Snakes.Add(new Snake(width / 2, height / 2, snakeStartLength, SnakeType.Human, humanSnakeHexHeadColor, humanSnakeHexBodyColor1, humanSnakeHexBodyColor2));
-            Snakes.Add(new Snake(10 / 2, height / 2, snakeStartLength, SnakeType.Computer, comuterSnakeHexHeadColor, comuterSnakeHexBodyColor1, comuterSnakeHexBodyColor2));
+            Snakes.Add(new Snake((width /4*3) -1, (height / 2) - 1, snakeStartLength, SnakeType.Human, humanSnakeHexHeadColor, humanSnakeHexBodyColor1, humanSnakeHexBodyColor2));
+            Snakes.Add(new Snake((width /4*1) -1, (height / 2) - 1, snakeStartLength, SnakeType.Computer, comuterSnakeHexHeadColor, comuterSnakeHexBodyColor1, comuterSnakeHexBodyColor2));
             Rocks = new List<Rock>();
             Apples = new List<Apple>();
             ObjectGenerator.CreateItems(rockCount, width, height, Snakes, ObjectType.Stone, Rocks);
@@ -47,7 +48,7 @@ namespace snakeLogic
         public List<Rock> Rocks { get; set; }
         public List<Apple> Apples { get; set; }
         public bool IsGameOver { get; private set; } = false;
-        public EndGameReason CheckCollisionEnd(Position position)
+        public EndGameReason CheckCollisionEnd(Snake currentSnake, Position position)
         {
             if (position.X < 0 || position.Y < 0 || position.X >= Width || position.Y >= Height)
             {
@@ -58,20 +59,19 @@ namespace snakeLogic
                 return EndGameReason.RockCollision;
             }
             //first or default anstatt any mit snaketype
-            //for schleife ^collision überprüfen und auf eigene schlange checken
-            foreach (var snake in Snakes)
+
+           // var currentSnake = Snakes.First(s => s.SnakeElements.Contains(position));
+            var collisionElement = Snakes.SelectMany(s => s.SnakeElements).Except(new[]{position}).FirstOrDefault(segment => segment.X == position.X && segment.Y == position.Y);
+            if (collisionElement != null)
             {
-                var collisionElement = Snakes.SelectMany(s => s.SnakeElements).FirstOrDefault(segment => segment.X == position.X && segment.Y == position.Y);
-                if (collisionElement != null)
+                var collisionSnake = Snakes.First(s => s.SnakeElements.Contains(collisionElement));
+                if (currentSnake == collisionSnake)
                 {
-                    if (snake.SnakeElements.Contains(collisionElement))
-                    {
-                        return EndGameReason.SelfCollision;
-                    }
-                    else
-                    {
-                        return EndGameReason.SnakeCollision;
-                    }
+                    return EndGameReason.SelfCollision;
+                }
+                else
+                {
+                    return EndGameReason.SnakeCollision;
                 }
             }
             return EndGameReason.None;
@@ -94,7 +94,7 @@ namespace snakeLogic
                     ? CalcNewPositionHumanSnake(snake)
                     : CalcNewPositionComputerSnake(snake);
 
-                var collisionReason = CheckCollisionEnd(newHead);
+                var collisionReason = CheckCollisionEnd(snake, newHead);
 
                 if (collisionReason != EndGameReason.None)
                 {
@@ -142,7 +142,7 @@ namespace snakeLogic
         }
         public Position CalcNewPositionHumanSnake(Snake snake)
         {
-            Position newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y);
+            var newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y);
 
             switch (snake.SnakeDirection)
             {
@@ -167,7 +167,7 @@ namespace snakeLogic
             var changeX = (snake.SnakeDirection == Direction.Left) ? -1 : (snake.SnakeDirection == Direction.Right) ? +1 : 0;
             var changeY = (snake.SnakeDirection == Direction.Up) ? -1 : (snake.SnakeDirection == Direction.Down) ? +1 : 0;
             var newPosition = new Position(snake.SnakeHead.X + changeX, snake.SnakeHead.Y + changeY);
-            return (CheckCollisionEnd(newPosition) == EndGameReason.None) ? newPosition: null;
+            return (CheckCollisionEnd(snake, newPosition) == EndGameReason.None) ? newPosition: null;
             
         }
         public Position CalcNewPositionComputerSnake(Snake snake)
@@ -201,6 +201,10 @@ namespace snakeLogic
                 snake.SnakeDirection = possibleDirection;
                 newHead = CheckNewPosition(snake);
                 if (newHead != null) break;
+            }
+            if (newHead == null)
+            {
+                newHead = new Position(snake.SnakeHead.X, snake.SnakeHead.Y + 1);
             }
 
             //do

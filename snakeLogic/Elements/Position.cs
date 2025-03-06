@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using snakeLogic.Interfaces;
 
 namespace snakeLogic.Elements
 {
-    public class Position
+    public class Position : IPosition
     {
         public Position(int x, int y )
         {

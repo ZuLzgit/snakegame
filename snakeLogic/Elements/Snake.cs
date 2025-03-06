@@ -42,6 +42,7 @@ namespace snakeLogic.Elements
                         y--;
                         break;
                 }
+                
                 SnakeElements.Insert(0, new Position(x, y));
                 segments++;
                 if (segments == steps)
@@ -82,7 +83,7 @@ namespace snakeLogic.Elements
         public int ApplesEaten { get; set; } = 0;
         public string GetHexElementColor(int index)
         {
-            return index == 0 ? HexHeadColor : (index % 2 == 0 ? HexBodyColor1 : HexBodyColor2);
+            return index == 0 ? HexHeadColor : (index % 2 == 0 ? HexBodyColor2 : HexBodyColor1);
 
         }
     }
